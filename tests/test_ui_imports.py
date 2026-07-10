@@ -11,7 +11,9 @@ def test_ui_package_importa():
     from ui import service, state, styles  # noqa: F401
     from ui.components import chat, sidebar  # noqa: F401
 
-    assert hasattr(service, "processar_turno")
+    assert hasattr(service, "enviar")
+    assert hasattr(service, "health")
+    assert hasattr(state, "init_session")
     assert hasattr(chat, "render_history")
     assert hasattr(sidebar, "render_sidebar")
 

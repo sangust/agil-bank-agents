@@ -35,11 +35,14 @@ jobs:
         # O pyproject vive em infra/ (package-mode = false); o código entra via PYTHONPATH.
         run: poetry -C infra install --no-interaction
 
+      # `poetry -C infra run` executa com CWD=infra/, onde não existem app/ e tests/.
+      # Voltamos à raiz do repo (onde estão app/, tests/, ruff.toml e pytest.ini) antes
+      # de rodar as ferramentas, mantendo o venv do Poetry no PATH.
       - name: Lint (ruff)
-        run: poetry -C infra run ruff check app tests
+        run: poetry -C infra run bash -c 'cd "$GITHUB_WORKSPACE" && ruff check app tests'
 
       - name: Run tests
-        run: poetry -C infra run pytest
+        run: poetry -C infra run bash -c 'cd "$GITHUB_WORKSPACE" && pytest'
         env:
           # Sem chaves reais: os testes cobrem regras determinísticas e não chamam LLM/APIs.
           GOOGLE_API_KEY: ""

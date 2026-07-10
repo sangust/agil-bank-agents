@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Cache Poetry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('infra/pyproject.toml') }}
+
+      - name: Install dependencies
+        # O pyproject vive em infra/ (package-mode = false); o código entra via PYTHONPATH.
+        run: poetry -C infra install --no-interaction
+
+      - name: Lint (ruff)
+        run: poetry -C infra run ruff check app tests
+
+      - name: Run tests
+        run: poetry -C infra run pytest
+        env:
+          # Sem chaves reais: os testes cobrem regras determinísticas e não chamam LLM/APIs.
+          GOOGLE_API_KEY: ""
+          GROQ_API_KEY: ""
+          REDIS_URL: ""

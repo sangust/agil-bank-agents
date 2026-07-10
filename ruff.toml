@@ -1,0 +1,10 @@
+line-length = 100
+src = ["app", "tests"]
+target-version = "py311"
+
+[lint]
+select = ["E", "F", "I", "UP", "B", "W"]
+ignore = ["B008"]  # chamadas em defaults (uso comum em DI leve e no FastAPI Depends)
+
+[lint.per-file-ignores]
+"tests/conftest.py" = ["E501"]  # linhas de dados CSV de teste (fixtures)

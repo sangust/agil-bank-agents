@@ -1,0 +1,52 @@
+services:
+  redis:
+    # redis-stack-server inclui o módulo RediSearch, exigido pelo RedisSaver do LangGraph.
+    # O redis "puro" falha com: unknown command 'FT._LIST'.
+    image: redis/redis-stack-server:7.2.0-v11
+    container_name: banco-agil-redis
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.api
+    container_name: banco-agil-api
+    env_file:
+      - .env
+    environment:
+      # Sessões persistidas no Redis (sobrevivem a restart da API)
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persiste CSVs gerados e a coleção Chroma no host
+      - ../app/data:/app/app/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.ui
+    container_name: banco-agil-ui
+    env_file:
+      - .env
+    environment:
+      - API_BASE_URL=http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  redis-data:

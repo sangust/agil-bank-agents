@@ -1,0 +1,7 @@
+servico,valor,descricao
+manutencao_conta,0.00,Conta digital sem tarifa de manutenção
+ted_doc,0.00,Transferências TED/DOC gratuitas
+pix,0.00,Pix ilimitado e gratuito
+saque_rede,6.90,Saque em caixas de outras redes
+segunda_via_cartao,15.00,Emissão de segunda via do cartão físico
+cambio_spread,0.02,Spread aplicado sobre a cotação comercial em operações de câmbio

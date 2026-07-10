@@ -1,0 +1,15 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+htmlcov
+.coverage
+**/.env
+app/logs
+app/data/chroma
+app/data/solicitacoes_aumento_limite.csv
+app/data/historico_score.csv
+desafio.pdf

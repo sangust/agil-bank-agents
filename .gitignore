@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Poetry
+infra/poetry.lock
+
+# Environment / secrets
+**/.env
+
+# Runtime gerado pela aplicação
+app/data/solicitacoes_aumento_limite.csv
+app/data/historico_score.csv
+app/data/chroma/
+app/logs/
+*.log
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/

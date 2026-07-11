@@ -15,7 +15,9 @@ from ui.styles import apply_styles, render_header
 PLACEHOLDER_ATIVO = "Digite sua mensagem..."
 PLACEHOLDER_ENCERRADO = "Atendimento encerrado. Clique em 'Novo atendimento'."
 
-st.set_page_config(page_title="Credibot — Atendimento", layout="centered")
+st.set_page_config(
+    page_title="Credibot — Atendimento", layout="centered", initial_sidebar_state="expanded"
+)
 
 
 def _enviar_mensagem(prompt: str) -> None:

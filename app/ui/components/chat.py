@@ -19,8 +19,8 @@ def _avatar_svg(inicial: str, fundo: str, cor: str) -> str:
 
 
 AVATARES = {
-    "assistant": _avatar_svg("C", "#1e3a5f", "#ffffff"),
-    "user": _avatar_svg("V", "#e2e8f0", "#334155"),
+    "assistant": _avatar_svg("C", "#6366f1", "#ffffff"),
+    "user": _avatar_svg("V", "#e6e7ec", "#3a3f4b"),
 }
 
 

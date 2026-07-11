@@ -101,19 +101,10 @@ MESES: Final[dict[str, int]] = {
 TAMANHO_CPF: Final[int] = 11
 
 # --- Câmbio -----------------------------------------------------------------
+# Moeda padrão quando o cliente não especifica (dólar->real), conforme o desafio.
 MOEDA_PADRAO: Final[str] = "USD"
 MOEDA_DESTINO_PADRAO: Final[str] = "BRL"
 TAMANHO_CODIGO_MOEDA: Final[int] = 3
-
-MOEDAS: Final[dict[str, str]] = {
-    "dolar": "USD", "dólar": "USD", "usd": "USD", "dollar": "USD",
-    "euro": "EUR", "eur": "EUR",
-    "libra": "GBP", "gbp": "GBP",
-    "iene": "JPY", "jpy": "JPY",
-    "peso": "ARS", "ars": "ARS",
-    "bitcoin": "BTC", "btc": "BTC",
-    "real": "BRL", "brl": "BRL",
-}
 
 # --- RAG --------------------------------------------------------------------
 RAG_CHUNK_SIZE: Final[int] = 500

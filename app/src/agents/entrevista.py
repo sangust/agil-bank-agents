@@ -11,7 +11,7 @@ from src.agents.common import (
     handler_encerrar,
 )
 from src.agents.prompts import PROMPT_ENTREVISTA
-from src.core.utils import formatar_brl, interno
+from src.core.utils import formatar_brl, interno, parse_valor
 from src.domain.enums import TipoEmprego
 from src.domain.models import DadosEntrevista
 from src.orchestration.container import get_services
@@ -35,9 +35,9 @@ def registrar_entrevista_tool(
 
 def _montar_dados(args: dict) -> DadosEntrevista:
     return DadosEntrevista(
-        renda_mensal=float(args.get("renda_mensal", 0)),
+        renda_mensal=parse_valor(args.get("renda_mensal", 0)),
         tipo_emprego=TipoEmprego.normalizar(str(args.get("tipo_emprego", ""))),
-        despesas_fixas=float(args.get("despesas_fixas", 0)),
+        despesas_fixas=parse_valor(args.get("despesas_fixas", 0)),
         num_dependentes=int(args.get("num_dependentes", 0)),
         tem_dividas=bool(args.get("tem_dividas", False)),
     )

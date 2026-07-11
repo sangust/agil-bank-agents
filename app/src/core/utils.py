@@ -6,11 +6,45 @@ import re
 from src.core.constants import MARCADOR_INTERNO
 
 _NAO_DIGITO = re.compile(r"\D")
+_SUFIXO_ALFA = re.compile(r"([a-zç]+)\s*$")
+_MULTIPLICADORES = {"k": 1_000, "mil": 1_000, "m": 1_000_000, "mi": 1_000_000, "milhao": 1_000_000}
 
 
 def somente_digitos(texto: str | None) -> str:
     """Remove tudo que não for dígito. '000.000.000-00' -> '00000000000'."""
     return _NAO_DIGITO.sub("", texto or "")
+
+
+def parse_valor(entrada: str | float | int) -> float:
+    """Converte uma quantia informada pelo cliente em float (reais).
+
+    Aceita número puro, '10k', '10 mil', 'R$ 10.000,00', '1.250', '1250,50'.
+    Levanta ValueError se não houver número reconhecível.
+    """
+    if isinstance(entrada, (int, float)):
+        return float(entrada)
+
+    texto = str(entrada).strip().lower()
+    for lixo in ("r$", "reais", "real"):
+        texto = texto.replace(lixo, "")
+    texto = texto.strip()
+
+    multiplicador = 1
+    sufixo = _SUFIXO_ALFA.search(texto)
+    if sufixo and sufixo.group(1) in _MULTIPLICADORES:
+        multiplicador = _MULTIPLICADORES[sufixo.group(1)]
+        texto = texto[: sufixo.start()].strip()
+
+    texto = texto.replace(" ", "")
+    if "," in texto:  # pt-BR: vírgula é decimal, pontos são milhar
+        texto = texto.replace(".", "").replace(",", ".")
+    else:
+        partes = texto.split(".")
+        # '10.000' / '1.234.567' são milhar; '10.5' é decimal
+        if len(partes) > 2 or (len(partes) == 2 and len(partes[1]) == 3):
+            texto = "".join(partes)
+
+    return float(texto) * multiplicador
 
 
 def formatar_brl(valor: float) -> str:

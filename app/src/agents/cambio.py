@@ -21,9 +21,10 @@ NOME = "cambio"
 
 
 @tool("consultar_cotacao")
-def consultar_cotacao_tool(moeda: str = "dolar", destino: str = "real") -> str:
-    """Consulta a cotação atual de uma moeda. moeda: nome/código (dolar, euro, USD...).
-    destino: moeda de destino (padrão real/BRL)."""
+def consultar_cotacao_tool(moeda: str = "USD", destino: str = "BRL") -> str:
+    """Consulta a cotação atual de uma moeda. Converta o nome dito pelo cliente para o
+    código ISO 4217 de 3 letras (dólar=USD, real=BRL, euro=EUR, iene=JPY, yuan=CNY,
+    libra=GBP...). destino: código da moeda de destino (padrão BRL)."""
     return ""
 
 

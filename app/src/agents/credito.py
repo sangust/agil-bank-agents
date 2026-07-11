@@ -14,7 +14,7 @@ from src.agents.common import (
     make_handoff_handler,
 )
 from src.agents.prompts import PROMPT_CREDITO
-from src.core.utils import formatar_brl, interno
+from src.core.utils import formatar_brl, interno, parse_valor
 from src.domain.enums import StatusPedido
 from src.orchestration.container import get_services
 
@@ -69,7 +69,7 @@ def _handler_solicitar_aumento(args: dict, state: dict) -> tuple[str, dict]:
         return interno(MSG_NAO_AUTENTICADO), {}
 
     try:
-        novo_limite = float(args["novo_limite"])
+        novo_limite = parse_valor(args["novo_limite"])
     except (KeyError, TypeError, ValueError):
         return interno("Valor de novo limite inválido. Peça ao cliente um número em reais."), {}
 

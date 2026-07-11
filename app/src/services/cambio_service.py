@@ -7,7 +7,6 @@ from src.core.config import get_settings
 from src.core.constants import (
     MOEDA_DESTINO_PADRAO,
     MOEDA_PADRAO,
-    MOEDAS,
     TAMANHO_CODIGO_MOEDA,
     TIMEOUT_CAMBIO_S,
 )
@@ -18,16 +17,17 @@ from src.domain.results import ResultadoCotacao
 logger = get_logger(__name__)
 
 
-def resolver_moeda(texto: str) -> str:
-    """Traduz uma referência de moeda (nome em pt ou código ISO) para o código ISO."""
-    if not texto:
-        return MOEDA_PADRAO
-    chave = texto.strip().lower()
-    if chave in MOEDAS:
-        return MOEDAS[chave]
-    if len(chave) == TAMANHO_CODIGO_MOEDA and chave.isalpha():
-        return chave.upper()
-    return MOEDA_PADRAO
+def resolver_moeda(texto: str) -> str | None:
+    """Normaliza uma moeda para o código ISO 4217 (ex.: 'usd' -> 'USD').
+
+    Não mantém dicionário de nomes: o próprio LLM informa o código de 3 letras e a API
+    é a fonte de verdade sobre o valor. Retorna None se não for um código válido — assim
+    nunca há substituição silenciosa por outra moeda.
+    """
+    codigo = (texto or "").strip().upper()
+    if len(codigo) == TAMANHO_CODIGO_MOEDA and codigo.isalpha():
+        return codigo
+    return None
 
 
 class CambioService:
@@ -40,6 +40,15 @@ class CambioService:
         self, moeda: str = MOEDA_PADRAO, destino: str = MOEDA_DESTINO_PADRAO
     ) -> ResultadoCotacao:
         origem, alvo = resolver_moeda(moeda), resolver_moeda(destino)
+        if origem is None or alvo is None:
+            invalida = moeda if origem is None else destino
+            return ResultadoCotacao(
+                ok=False,
+                mensagem=(
+                    f'Não reconheci a moeda "{str(invalida).strip()}". '
+                    "Informe o código de 3 letras, por exemplo USD, EUR ou CNY."
+                ),
+            )
         par = f"{origem}-{alvo}"
 
         try:

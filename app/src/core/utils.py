@@ -21,7 +21,7 @@ def parse_valor(entrada: str | float | int) -> float:
     Aceita número puro, '10k', '10 mil', 'R$ 10.000,00', '1.250', '1250,50'.
     Levanta ValueError se não houver número reconhecível.
     """
-    if isinstance(entrada, (int, float)):
+    if isinstance(entrada, int | float):
         return float(entrada)
 
     texto = str(entrada).strip().lower()

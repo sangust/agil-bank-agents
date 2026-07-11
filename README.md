@@ -8,8 +8,6 @@ agentes trocam de contexto de forma transparente (handoffs implícitos).
 A solução é dividida em **backend (API FastAPI)** e **frontend (UI Streamlit)**: todo o chat
 acontece por **requisições HTTP** à API, que mantém o estado da conversa por sessão em **Redis**.
 
-[![CI](https://github.com/USUARIO/credibot/actions/workflows/ci.yml/badge.svg)](./.github/workflows/ci.yml)
-
 ---
 
 ## Sumário

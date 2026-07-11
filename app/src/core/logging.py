@@ -17,7 +17,7 @@ def _configurar() -> None:
         level=logging.INFO,
         format=FORMATO,
         handlers=[
-            logging.FileHandler(LOGS_DIR / "banco_agil.log", encoding="utf-8"),
+            logging.FileHandler(LOGS_DIR / "credibot.log", encoding="utf-8"),
             logging.StreamHandler(),
         ],
     )

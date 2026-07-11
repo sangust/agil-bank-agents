@@ -7,32 +7,32 @@ from ui.service import API_BASE_URL, health
 from ui.state import reset_session
 
 NOMES_AGENTES = {
-    "triagem": "🤖 Triagem",
-    "credito": "💳 Crédito",
-    "entrevista": "🗣️ Entrevista de Crédito",
-    "cambio": "💱 Câmbio",
+    "triagem": "Triagem",
+    "credito": "Crédito",
+    "entrevista": "Entrevista de Crédito",
+    "cambio": "Câmbio",
 }
 
 
 def render_sidebar(debug: dict, finished: bool) -> None:
     with st.sidebar:
-        st.header("🏦 Banco Ágil")
+        st.header("Credibot")
         st.caption("Atendimento com agentes de IA")
-        st.button("🔄 Novo atendimento", on_click=reset_session, use_container_width=True)
+        st.button("Novo atendimento", on_click=reset_session, use_container_width=True)
 
         # status da API
         if health():
-            st.markdown('<span class="ba-chip">API online</span>', unsafe_allow_html=True)
+            st.markdown('<span class="cb-chip">API online</span>', unsafe_allow_html=True)
         else:
             st.warning(f"API indisponível em {API_BASE_URL}")
 
         st.divider()
-        st.subheader("🔎 Debug (interno)")
+        st.subheader("Debug (interno)")
 
         atual = debug.get("current_agent", "triagem")
         linhas = [
             f"**Agente ativo:** {NOMES_AGENTES.get(atual, atual)}",
-            f"**Autenticado:** {'✅' if debug.get('authenticated') else '❌'}",
+            f"**Autenticado:** {'Sim' if debug.get('authenticated') else 'Não'}",
         ]
         if debug.get("cliente_nome"):
             linhas.append(f"**Cliente:** {debug['cliente_nome']}")
@@ -45,7 +45,7 @@ def render_sidebar(debug: dict, finished: bool) -> None:
             linhas.append(f"**Aumento pendente:** R$ {float(debug['pending_increase']):,.2f}")
 
         st.markdown(
-            '<div class="ba-debug-card">' + "<br>".join(linhas) + "</div>",
+            '<div class="cb-debug-card">' + "<br>".join(linhas) + "</div>",
             unsafe_allow_html=True,
         )
         if finished:

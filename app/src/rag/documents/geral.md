@@ -1,6 +1,6 @@
-# Sobre o Banco Ágil
+# Sobre o Credibot
 
-O Banco Ágil é um banco digital fictício que oferece atendimento por agentes de
+O Credibot é um banco digital fictício que oferece atendimento por agentes de
 inteligência artificial. O atendimento cobre:
 
 - Consulta e aumento de limite de crédito.

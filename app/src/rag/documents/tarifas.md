@@ -1,6 +1,6 @@
-# Tarifas e Cesta de Serviços do Banco Ágil
+# Tarifas e Cesta de Serviços do Credibot
 
-O Banco Ágil é um banco digital com foco em custo baixo.
+O Credibot é um banco digital com foco em custo baixo.
 
 - Manutenção de conta: gratuita (conta digital sem mensalidade).
 - Pix: ilimitado e gratuito, 24 horas por dia.

@@ -25,3 +25,20 @@ class SolicitacaoRepository(CsvRepository):
             },
             HEADER_SOLICITACOES,
         )
+
+    def atualizar(self, solicitacao: SolicitacaoAumento) -> None:
+        """Atualiza status e motivo do pedido já registrado (mesma chave cpf + data_hora).
+
+        Reflete o "caminha para 'aprovado'/'rejeitado'" do enunciado: o pedido é registrado
+        como 'pendente' e depois transiciona para o status final na mesma linha.
+        """
+        chave = solicitacao.data_hora_solicitacao.isoformat()
+        linhas = self.read_dicts()
+        for linha in linhas:
+            if (
+                linha.get("cpf_cliente") == solicitacao.cpf_cliente
+                and linha.get("data_hora_solicitacao") == chave
+            ):
+                linha["status_pedido"] = solicitacao.status_pedido.value
+                linha["motivo"] = solicitacao.motivo
+        self.write_dicts(linhas, HEADER_SOLICITACOES)

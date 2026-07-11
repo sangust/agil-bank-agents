@@ -1,6 +1,6 @@
-# Câmbio no Banco Ágil
+# Câmbio no Credibot
 
-O Banco Ágil oferece consulta de cotação de moedas em tempo real. As moedas suportadas
+O Credibot oferece consulta de cotação de moedas em tempo real. As moedas suportadas
 incluem dólar americano (USD), euro (EUR), libra esterlina (GBP), iene japonês (JPY) e
 peso argentino (ARS), sempre convertidas para o real (BRL).
 

@@ -1,4 +1,4 @@
-"""Cliente HTTP da UI para a API do Banco Ágil.
+"""Cliente HTTP da UI para a API do Credibot.
 
 A UI não conhece o grafo nem os serviços — tudo passa por requisições à API.
 """

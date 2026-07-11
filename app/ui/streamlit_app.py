@@ -1,4 +1,4 @@
-"""Ponto de entrada da UI do Banco Ágil (cliente HTTP da API).
+"""Ponto de entrada da UI do Credibot (cliente HTTP da API).
 
 Requer que `app/` esteja no PYTHONPATH (o Dockerfile e o README já cuidam disso).
 """
@@ -15,7 +15,7 @@ from ui.styles import apply_styles, render_header
 PLACEHOLDER_ATIVO = "Digite sua mensagem..."
 PLACEHOLDER_ENCERRADO = "Atendimento encerrado. Clique em 'Novo atendimento'."
 
-st.set_page_config(page_title="Banco Ágil — Atendimento", page_icon="🏦", layout="centered")
+st.set_page_config(page_title="Credibot — Atendimento", layout="centered")
 
 
 def _enviar_mensagem(prompt: str) -> None:

@@ -2,7 +2,7 @@
 # package-mode = false: o Poetry só gerencia dependências. O código é resolvido via
 # PYTHONPATH=app (ver Dockerfiles e README), o que permite manter este arquivo em infra/.
 package-mode = false
-name = "banco-agil"
+name = "credibot"
 version = "0.4.0"
 description = "Agente Bancário Inteligente — API FastAPI + UI Streamlit (LangGraph + RAG)"
 authors = ["Candidato <candidato@example.com>"]

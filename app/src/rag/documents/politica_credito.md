@@ -1,4 +1,4 @@
-# Política de Crédito do Banco Ágil
+# Política de Crédito do Credibot
 
 ## Score de crédito
 O score varia de 0 a 1000 e determina o limite máximo de crédito disponível. Ele é

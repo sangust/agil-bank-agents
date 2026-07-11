@@ -1,6 +1,7 @@
 """Serviço de crédito: consulta de limite e solicitação/avaliação de aumento."""
 from __future__ import annotations
 
+from src.core.logging import get_logger
 from src.core.utils import formatar_brl, formatar_percentual
 from src.domain.enums import StatusPedido
 from src.domain.models import Cliente, FaixaScore, SolicitacaoAumento
@@ -9,6 +10,8 @@ from src.repositories.base import RepositoryError
 from src.repositories.clientes import ClienteRepository
 from src.repositories.score_limite import FaixaScoreRepository
 from src.repositories.solicitacoes import SolicitacaoRepository
+
+logger = get_logger(__name__)
 
 
 class CreditoService:
@@ -56,21 +59,14 @@ class CreditoService:
                 mensagem="Não consegui consultar a política de crédito agora. Tente mais tarde.",
             )
 
-        aprovado = novo_limite <= faixa.limite_maximo
-        status = StatusPedido.APROVADO if aprovado else StatusPedido.REJEITADO
+        # 1) Registra o pedido formal como PENDENTE (antes da checagem de score).
         solicitacao = SolicitacaoAumento(
             cpf_cliente=cliente.cpf,
             limite_atual=cliente.limite_atual,
             novo_limite_solicitado=novo_limite,
-            status_pedido=status,
+            status_pedido=StatusPedido.PENDENTE,
             score_no_momento=cliente.score,
-            motivo=(
-                "dentro do limite da faixa" if aprovado
-                else f"acima do teto de {formatar_brl(faixa.limite_maximo)} "
-                     f"para o score {cliente.score}"
-            ),
         )
-
         try:
             self.solicitacoes.append(solicitacao)
         except RepositoryError:
@@ -78,6 +74,25 @@ class CreditoService:
                 status=StatusPedido.ERRO,
                 mensagem="Não consegui registrar sua solicitação agora. Tente em instantes.",
             )
+
+        # 2) Checagem do score: o pedido "caminha para" aprovado ou rejeitado.
+        aprovado = novo_limite <= faixa.limite_maximo
+        status = StatusPedido.APROVADO if aprovado else StatusPedido.REJEITADO
+        solicitacao = solicitacao.model_copy(
+            update={
+                "status_pedido": status,
+                "motivo": (
+                    "dentro do limite da faixa" if aprovado
+                    else f"acima do teto de {formatar_brl(faixa.limite_maximo)} "
+                         f"para o score {cliente.score}"
+                ),
+            }
+        )
+        try:
+            self.solicitacoes.atualizar(solicitacao)
+        except RepositoryError:
+            # O pedido já foi registrado; uma falha ao gravar a transição não invalida a decisão.
+            logger.warning("Falha ao atualizar status do pedido para %s.", status.value)
 
         if not aprovado:
             return ResultadoAumento(

@@ -18,9 +18,14 @@ def test_score_dentro_do_intervalo():
     assert 0 <= calcular_score(_dados(5000, "formal", 2000, 1, False)) <= 1000
 
 
-def test_score_maximo_natural():
-    # Máximo natural com os pesos do PDF = 800.
-    assert calcular_score(_dados(1_000_000, "formal", 0, 0, False)) == 800
+def test_score_clampado_em_1000():
+    # Fórmula literal do PDF (sem teto no termo de renda): renda alta satura no clamp de 1000.
+    assert calcular_score(_dados(1_000_000, "formal", 0, 0, False)) == 1000
+
+
+def test_score_formula_literal():
+    # (3000/(1000+1))*30 + 300 (formal) + 100 (0 dep) + 100 (sem dívidas) = 589.9 -> 590
+    assert calcular_score(_dados(3000, "formal", 1000, 0, False)) == 590
 
 
 def test_score_minimo_nao_negativo():

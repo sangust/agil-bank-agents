@@ -3,7 +3,7 @@ services:
     # redis-stack-server inclui o módulo RediSearch, exigido pelo RedisSaver do LangGraph.
     # O redis "puro" falha com: unknown command 'FT._LIST'.
     image: redis/redis-stack-server:7.2.0-v11
-    container_name: banco-agil-redis
+    container_name: credibot-redis
     volumes:
       - redis-data:/data
     healthcheck:
@@ -17,7 +17,7 @@ services:
     build:
       context: ..
       dockerfile: infra/Dockerfile.api
-    container_name: banco-agil-api
+    container_name: credibot-api
     env_file:
       - .env
     environment:
@@ -37,7 +37,7 @@ services:
     build:
       context: ..
       dockerfile: infra/Dockerfile.ui
-    container_name: banco-agil-ui
+    container_name: credibot-ui
     env_file:
       - .env
     environment:

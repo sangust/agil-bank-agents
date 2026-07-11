@@ -22,7 +22,7 @@ ENV_FILE: Final[Path] = INFRA_DIR / ".env"
 
 DOCS_DIR: Final[Path] = SRC_DIR / "rag" / "documents"
 CHROMA_DIR: Final[Path] = DATA_DIR / "chroma"
-CHROMA_COLLECTION: Final[str] = "banco_agil_conhecimento"
+CHROMA_COLLECTION: Final[str] = "credibot_conhecimento"
 
 CLIENTES_CSV: Final[Path] = DATA_DIR / "clientes.csv"
 SCORE_LIMITE_CSV: Final[Path] = DATA_DIR / "score_limite.csv"
@@ -72,8 +72,6 @@ SCORE_MINIMO: Final[int] = 0
 SCORE_MAXIMO: Final[int] = 1000
 
 PESO_RENDA: Final[int] = 30
-# Teto de contribuição do termo de renda, para manter a escala equilibrada.
-MAX_CONTRIB_RENDA: Final[int] = 300
 
 # Chaves em texto: TipoEmprego é StrEnum, então o lookup funciona direto.
 PESO_EMPREGO: Final[dict[str, int]] = {

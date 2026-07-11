@@ -1,9 +1,27 @@
 """Componente de chat: renderiza o histórico visível ao cliente."""
 from __future__ import annotations
 
+import base64
+
 import streamlit as st
 
-AVATARES = {"user": "🧑", "assistant": "🏦"}
+
+def _avatar_svg(inicial: str, fundo: str, cor: str) -> str:
+    """Gera um avatar circular com uma inicial (sem emoji), como data URI."""
+    svg = (
+        "<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'>"
+        f"<rect width='36' height='36' rx='18' fill='{fundo}'/>"
+        "<text x='18' y='24' font-family='Helvetica,Arial,sans-serif' font-size='16' "
+        f"font-weight='700' fill='{cor}' text-anchor='middle'>{inicial}</text></svg>"
+    )
+    b64 = base64.b64encode(svg.encode("utf-8")).decode("ascii")
+    return f"data:image/svg+xml;base64,{b64}"
+
+
+AVATARES = {
+    "assistant": _avatar_svg("C", "#1e3a5f", "#ffffff"),
+    "user": _avatar_svg("V", "#e2e8f0", "#334155"),
+}
 
 
 def _texto_seguro(conteudo: str) -> str:

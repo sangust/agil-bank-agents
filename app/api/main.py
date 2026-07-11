@@ -1,4 +1,4 @@
-"""Aplicação FastAPI do Banco Ágil (backend do atendimento)."""
+"""Aplicação FastAPI do Credibot (backend do atendimento)."""
 from __future__ import annotations
 
 from fastapi import FastAPI
@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from api.routes import chat, health
 
 app = FastAPI(
-    title="Banco Ágil API",
+    title="Credibot API",
     version="0.3.0",
     description="Atendimento bancário multi-agente (LangGraph + RAG) exposto por HTTP.",
 )

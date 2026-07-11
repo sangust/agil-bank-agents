@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from src.core.constants import (
-    MAX_CONTRIB_RENDA,
     MAX_DEPENDENTES_TABELADO,
     PESO_DEPENDENTES,
     PESO_DIVIDAS,
@@ -20,9 +19,12 @@ def _peso_dependentes(quantidade: int) -> int:
 
 
 def calcular_score(dados: DadosEntrevista) -> int:
-    """Retorna o novo score de crédito, limitado a [SCORE_MINIMO, SCORE_MAXIMO]."""
-    razao_renda = dados.renda_mensal / (dados.despesas_fixas + 1)
-    contribuicao_renda = min(razao_renda * PESO_RENDA, MAX_CONTRIB_RENDA)
+    """Retorna o novo score de crédito pela fórmula do enunciado, com clamp [0, 1000].
+
+    score = (renda / (despesas + 1)) * peso_renda + peso_emprego + peso_dependentes
+            + peso_dividas
+    """
+    contribuicao_renda = (dados.renda_mensal / (dados.despesas_fixas + 1)) * PESO_RENDA
 
     bruto = (
         contribuicao_renda

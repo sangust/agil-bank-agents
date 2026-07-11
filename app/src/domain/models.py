@@ -13,7 +13,7 @@ def _agora_utc() -> datetime:
 
 
 class Cliente(BaseModel):
-    """Cliente do Banco Ágil (espelha uma linha de clientes.csv)."""
+    """Cliente do Credibot (espelha uma linha de clientes.csv)."""
 
     cpf: str
     nome: str

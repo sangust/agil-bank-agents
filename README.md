@@ -13,6 +13,7 @@ acontece por **requisições HTTP** à API, que mantém o estado da conversa por
 ## Sumário
 
 - [Visão Geral](#visão-geral)
+- [Stack e por quê](#stack-e-por-quê)
 - [Arquitetura](#arquitetura)
   - [Estrutura de diretórios](#estrutura-de-diretórios)
   - [Fluxo de uma mensagem](#fluxo-de-uma-mensagem)
@@ -42,6 +43,38 @@ O atendimento começa na **Triagem**, que autentica o cliente (CPF + data de nas
 
 Qualquer agente pode consultar a **base de conhecimento (RAG)** para responder dúvidas sobre
 políticas, tarifas, crédito, câmbio e segurança com informações oficiais do banco.
+
+---
+
+## Stack e por quê
+
+A decisão central foi usar **LangGraph** para orquestrar os agentes. O desafio sugeria
+LangGraph, CrewAI, LangChain, LlamaIndex e Google ADK — escolhi LangGraph porque o problema é,
+na essência, **fluxo de estado entre agentes**, e é exatamente isso que ele modela.
+
+- **Orquestração — LangGraph.** Cada agente vira um **nó** de um grafo de estado, e o *handoff
+  invisível no mesmo turno* que o desafio pede cai naturalmente numa **aresta condicional** (o
+  campo `_goto`). O estado compartilhado (histórico via `add_messages`, autenticação, agente
+  atual, pendências) é cidadão de primeira classe, e o **checkpointer** dá persistência de sessão
+  sem código extra. Por que não as alternativas: CrewAI/AutoGen são ótimos para "times com
+  papéis", mas abstraem demais o controle de fluxo por turno; os agentes ReAct do LangChain dão
+  menos controle determinístico sobre as transições; LlamaIndex brilha em RAG, não em orquestração
+  multiagente com estado; Google ADK amarraria ao ecossistema Google. Para *handoffs implícitos
+  com estado*, LangGraph é o encaixe mais direto.
+- **LLM — Gemini (primário) → Groq (fallback).** Ambos com free tier, entre os sugeridos no
+  desafio. O Gemini `flash-lite` é barato e bom em *tool calling* (essencial, já que os agentes
+  agem escolhendo ferramentas); o Groq (Llama 3.3) entra como **resiliência** quando a cota do
+  Gemini estoura. O `with_fallbacks` do LangChain torna a troca transparente. (OpenAI/TogetherAI/
+  OpenRouter eram opções; optei por Gemini+Groq por custo zero e pela latência do Groq.)
+- **Como a stack facilita construir os agentes.** O padrão **`@tool` (schema) + handler
+  (execução)** separa *o que o LLM decide* de *o que o sistema faz*: a regra de negócio fica
+  determinística, isolada em `services/` e **testável sem chamar LLM**; o modelo só orquestra
+  linguagem e escolhe ferramentas. Com o grafo (transições) + container de DI (serviços),
+  **adicionar um agente é criar um módulo no mesmo formato e registrar um nó** — sem reescrever
+  o motor de turno.
+- **Suporte — RAG em ChromaDB** (banco vetorial *embedded*, sem servidor extra), **sessões em
+  Redis** (sobrevivem a restart), **API em FastAPI** e **UI em Streamlit** (sugerido no desafio),
+  desacoplados por HTTP. **Pydantic** em todo o domínio para validação e serialização confiáveis.
 
 ---
 
@@ -207,17 +240,16 @@ uma biblioteca de índice; a troca custou reescrever somente `providers/vectorst
 
 ## Escolhas Técnicas
 
-- **Backend e frontend desacoplados** — a UI é apenas um cliente HTTP; a lógica vive atrás da API.
-- **Sessões no servidor (Redis)** — o cliente permanece leve e stateless; conversas sobrevivem a
-  restart e escalam com múltiplos workers.
-- **Camada `providers`** — todo acoplamento externo (LLM, embeddings, vetores, Redis) fica
-  isolado. Trocar Chroma por outro store, ou Gemini por outro modelo, não toca em `services`
-  nem em `agents`.
-- **Regras de negócio determinísticas**, separadas do LLM e testáveis sem chamar API alguma.
-- **Pydantic em todo o domínio** (modelos, enums e *results*) — validação e serialização
-  confiáveis.
-- **`constants.py` e `utils.py`** — sem números mágicos e sem formatação duplicada.
-- **CI (GitHub Actions)** — ruff + pytest com cobertura em Python 3.11 e 3.12.
+Práticas de engenharia que sustentam o projeto (o *porquê* de cada tecnologia está em
+[Stack e por quê](#stack-e-por-quê)):
+
+- **Regra de negócio separada do LLM** — toda a lógica (auth, score, crédito, câmbio) vive em
+  `services/` puros e é **testada sem chamar nenhuma API**; o LLM apenas orquestra a conversa.
+- **Domínio em Pydantic** — modelos, enums e *results* tipados, com validação e serialização
+  confiáveis, sem estruturas soltas.
+- **Sem números mágicos** — limites, pesos e cabeçalhos de CSV centralizados em `constants.py`;
+  formatação de texto/moeda em `utils.py`.
+- **CI (GitHub Actions)** — ruff + pytest com cobertura em Python 3.11 e 3.12 a cada push.
 
 ---
 

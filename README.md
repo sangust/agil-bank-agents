@@ -50,7 +50,7 @@ app/
   data/            # CSVs (fonte de dados) + coleção Chroma (gerada)
   logs/            # gerado em runtime
 infra/             # pyproject.toml (Poetry), Dockerfiles, docker-compose, .env
-tests/  .github/   pytest.ini  ruff.toml  .coveragerc  .gitignore
+tests/  .github/   pytest.ini  ruff.toml  .gitignore
 ```
 
 ```mermaid
@@ -276,7 +276,7 @@ repositórios, domínio, RAG) **e a orquestração completa** — grafo e API �
 sem chamar nenhuma API externa.
 
 ```bash
-poetry -C infra run pytest            # com cobertura (pytest.ini + .coveragerc)
+poetry -C infra run pytest            # com cobertura (config em pytest.ini)
 poetry -C infra run ruff check app tests
 ```
 
